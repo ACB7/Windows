@@ -1,0 +1,39 @@
+
+
+Handleiding: Automatisch genereren van homedirectories in een bestaande Mirror M: of RAID5 R:**
+
+*Stap 1: Inloggen op DC met administrator account*
+
+1. Log in op het Domain Controller (DC) met een administrator-account om de benodigde configuraties uit te voeren.
+
+*Stap 2: Een share homefolder maken*
+1. Open Windows Verkenner op de DC-server.
+2. Navigeer naar de gewenste locatie waar je de homefoldermap wilt maken (bijvoorbeeld M: of R:).
+3. Klik met de rechtermuisknop op de doellocatie en selecteer 'Nieuw' en vervolgens 'Map'.
+4. Geef de map een naam (bijvoorbeeld 'HomeFolders') en druk op Enter.
+5. Klik met de rechtermuisknop op de zojuist gemaakte map ('HomeFolders') en selecteer Advanced sharing  en vink het vakje share aan. Klik op Permissions
+6. Klik op Everyone en wijzig de machtiging naar Full Control '(Volledig beheer')
+7.  Apply 
+
+*Stap 3: NTFS-machtiging instellen voor homefolder*
+1. Navigeer naar de map 'HomeFolders' en klik met de rechtermuisknop op de map.
+2. Selecteer 'Eigenschappen' en ga naar het tabblad 'Security (Beveiliging')
+3. Klik op de knop 'Geavanceerd' en klik linksonder op  Disable Inheritance
+4. Convert alle bestaande ACL-items en verwijder alles behalve de Administrator.
+6. ACE  administrator is Full Control 
+
+*Stap 4: Gebruik van de optie \\server\share\%username% in het veld homefolder van een gebruikersaccount* . Gebruik stationsletter H:
+1. Open de Active Directory-beheerconsole op de DC.
+2. Zoek en selecteer de gebruiker voor wie je een homefolder wilt maken.
+3. Ga naar het tabblad 'Profiel'.
+
+
+
+4. In het veld 'Homefolder', Kies de letter H: . De gebruiker krijgt deze letter te zien in zijn verkenner, DIT IS NIET DE LETTER VAN DE SCHIJF WAAROP JIJ DE HOMEFOLDER HEBT GEZET!! 
+Voer het pad in met behulp van de variabele `%username%`. Bijvoorbeeld: `\\Servernaam\HomeFolders\%username%`. Username verandert dan in de gebruikersnaam.
+5. Open de verkenner en kijk of de mappen automatisch zijn aangemaakt. Bekijk en controleer de ACL en ACE van een individuele gebruiker. Hierin mag de groep Users NOOIT voorkomen. Die mogen immers niet in een persoonlijke map.
+
+*Stap 5: Testen via een client*
+1. Laat de gebruiker inloggen op een clientcomputer die is verbonden met het domein.
+2. De homefolder wordt automatisch gegenereerd in de map 'HomeFolders' op de gedeelde locatie met de naam van de gebruiker als submap. Met de stationsletter H:
+3. Test of de  gebruiker toegang heeft tot zijn/haar homefolder en bestanden kan maken/bewerken/verwijderen
